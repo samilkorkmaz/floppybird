@@ -112,7 +112,6 @@ function startGame()
    //update the big score
    setBigScore();
 
-   //debug mode?
    if(debugmode)
    {
       //show the bounding boxes
@@ -137,13 +136,14 @@ function updatePlayer(player)
    $(player).css({ rotate: rotation, top: position });
 }
 
+var frameCounter  = 0;
 function gameloop() {
    var player = $("#player");
 
    //update the player speed/position
    velocity += gravity;
    position += velocity;
-
+   
    //update the player
    updatePlayer(player);
 
@@ -160,8 +160,7 @@ function gameloop() {
    var boxbottom = boxtop + boxheight;
 
    //if we're in debug mode, draw the bounding box
-   if(debugmode)
-   {
+   if(debugmode) {
       var boundingbox = $("#playerbox");
       boundingbox.css('left', boxleft);
       boundingbox.css('top', boxtop);
@@ -170,20 +169,17 @@ function gameloop() {
    }
 
    //did we hit the ground?
-   if(box.bottom >= $("#land").offset().top)
-   {
+   if(box.bottom >= $("#land").offset().top) {
       playerDead();
       return;
    }
 
    //have they tried to escape through the ceiling? :o
    var ceiling = $("#ceiling");
-   if(boxtop <= (ceiling.offset().top + ceiling.height()))
-      position = 0;
+   if(boxtop <= (ceiling.offset().top + ceiling.height())) position = 0;
 
    //we can't go any further without a pipe
-   if(pipes[0] == null)
-      return;
+   if(pipes[0] == null) return;
 
    //determine the bounding box of the next pipes inner area
    var nextpipe = pipes[0];
@@ -207,19 +203,41 @@ function gameloop() {
    if(boxright > pipeleft)
    {
       //we're within the pipe, have we passed between upper and lower pipes?
-      if(boxtop > pipetop && boxbottom < pipebottom)
-      {
+      if(boxtop > pipetop && boxbottom < pipebottom) {
          //yeah! we're within bounds
-
-      }
-      else
-      {
+      } else {
          //no! we touched the pipe
          playerDead();
          return;
       }
    }
-
+   //Autopilot logic
+   const autopilotPeriod = 1;
+   if (frameCounter++ % autopilotPeriod === 0) { //autopilot period, 
+	  const gap = 30;
+	  const pipeMidpoint = pipetop + (-2)*gap;
+	  //Original project: https://github.com/nebez/floppybird
+	  //Reference: https://github.com/mjoswig/FlappyBird/blob/master/src/de/manuel_joswig/flappybird/game/Board.java, moveBird(Bird b)
+	  // dy between bird and gap after not tapping (=> add gravity vector)
+	  var velocityFall = velocity + gravity;
+      var posFall = position + velocityFall;
+	  const dyg = Math.abs(pipeMidpoint - posFall);
+			
+	  // dy between bird an gap after tapping (=> add impulse vector)
+	  var posJump = position + jump;
+	  const dyi = Math.abs(pipeMidpoint - posJump);
+			
+	  // only tap if dy is lesser after tapping than after not tapping
+      if (dyi < dyg) {
+	    // create a dummy bird for preventing a possible collision
+	    /*Bird dummy = new Bird(new Vector2D(b.getPosition().getX(), b.getPosition().getY() + IMPULSE.getY()), 25, 25, false);	
+	    if (!dummy.collidesWithPipe(p)) b.setPosition(b.getPosition().add(IMPULSE));*/
+		playerJump();
+	  } 
+	  /*if(boxtop > pipeMidpoint) {
+         playerJump();
+      }*/	
+   }
 
    //have we passed the imminent danger?
    if(boxleft > piperight)
