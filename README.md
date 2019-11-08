@@ -1,3 +1,7 @@
+Added autopilot (as implemented in https://github.com/mjoswig/FlappyBird, see Board.java, moveBird(Bird b)) to main.js, gameloop()
+
+Original md file:
+
 # [play floppy bird](https://nebez.github.io/floppybird/)
 
 If you missed the Flappy Bird hype, here's your chance to try the best vintage knockoff.
