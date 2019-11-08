@@ -1,4 +1,4 @@
-Added autopilot (as implemented in https://github.com/mjoswig/FlappyBird, see [Board.java](https://github.com/mjoswig/FlappyBird/blob/master/src/de/manuel_joswig/flappybird/game/Board.java), moveBird(Bird b)) to main.js, gameloop()
+Added autopilot (as implemented in https://github.com/mjoswig/FlappyBird, see [Board.java](https://github.com/mjoswig/FlappyBird/blob/master/src/de/manuel_joswig/flappybird/game/Board.java), moveBird(Bird b)) to [main.js](https://github.com/samilkorkmaz/floppybird/blob/gh-pages/js/main.js), gameloop()
 
 Original md file:
 
